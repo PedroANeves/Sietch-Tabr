@@ -1,5 +1,66 @@
 CONTAINER_ENGINE = podman
+CODENAME = trixie
+GPG_KEY = sietch-tabr.pub.asc
 
 .PHONY: help
 help: # Show this help.
 	@egrep -h '\s#\s' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?# "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+###############################################################################
+# Develop
+###############################################################################
+
+DEV_IMG = sietch-tabr-dev:latest
+.PHONY: dev-init
+dev-init: dev.Containerfile # Builds dev container.
+	$(CONTAINER_ENGINE) build -t $(DEV_IMG) -f dev.Containerfile .
+
+SERVER_CONTAINER = sietch-tabr-server
+.PHONY: serve
+serve: # Serve localhost apt repository.
+	$(MAKE) stop-serve
+	@echo "Starting local mirror at http://localhost:8080..."
+	$(CONTAINER_ENGINE) run --rm -d --replace \
+		--name $(SERVER_CONTAINER) \
+		-p 8080:8080 \
+		--userns=keep-id \
+		-v $(shell pwd)/tests/nginx.conf:/etc/nginx/nginx.conf:ro \
+		-v $(shell pwd)/public:/usr/share/nginx/html:Z,ro \
+		docker.io/library/nginx:alpine
+
+.PHONY: stop-serve
+stop-serve: # Safely stops localhost apt repository.
+	@if $(CONTAINER_ENGINE) ps | grep -q $(SERVER_CONTAINER); then $(CONTAINER_ENGINE) stop $(SERVER_CONTAINER); fi
+
+.PHONY: clean
+clean: # Removes generated public artifacts.
+	rm -fr public/*
+
+###############################################################################
+# Build
+###############################################################################
+PACKAGES_LIST := $(shell sed 's/=.*//' ./packages/versions.ini | xargs)
+
+.PHONY: build
+build: # Builds repository.
+	mkdir -p public/
+	sed \
+		-e 's/{{ %packages% }}/$(PACKAGES_LIST)/' \
+		-e "s|{{ %REPO_URL% }}|$(REPO_URL)|" \
+		-e "s|{{ %GPG_KEY% }}|$(GPG_KEY)|" \
+		index.html.template > public/index.html
+
+###############################################################################
+# Test
+###############################################################################
+
+REPO_URL = http://localhost:8080
+.PHONY: test
+test: dev-init build # Runs install against http://localhost:8080
+	@echo "Running End-to-End Repository Test..."
+	$(MAKE) stop-serve
+	$(MAKE) serve
+	$(CONTAINER_ENGINE) run --rm \
+		--network=host \
+		-v $(shell pwd)/tests/test_sietch.sh:/opt/test_sietch.sh:Z,ro \
+		$(DEV_IMG) "/opt/test_sietch.sh" "$(REPO_URL)" "$(GPG_KEY)" "$(CODENAME)" "$(PACKAGES_LIST)"

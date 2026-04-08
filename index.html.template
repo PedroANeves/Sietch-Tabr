@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sietch Tabr | APT Repository</title>
+  <style>
+    :root {
+      --bg: #050101;      /* background */
+      --fg: #c6c2c2;      /* foreground */
+      --accent: #b58d5e;  /* color 4 (blue) */
+      --muted: #6f5c5a;   /* color 8 (light black) */
+      --code-bg: #1b0b0b; /* color 0 (black) */
+      --urgent: #bb1a04;  /* color 1 (red) */
+      --info: #1b86ac;    /* color 5 (magenta) */
+      --border: #1b0b0b; /* color 0 (black) */
+    }
+    @font-face {
+      font-family: Unifont;
+      src: url("unifont-17.0.04.otf");
+    }
+    body {
+      font-family: 'Unifont', monospace;
+      line-height: 1.6; margin: 0 auto; max-width: 750px; padding: 4rem 1.5rem;
+      background-color: var(--bg); color: var(--fg); text-align: center;
+    }
+    h1 {
+      color: var(--fg);
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 0.2rem;
+      font-weight: normal;
+    }
+    .sub-header {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 3rem;
+      font-style: italic;
+    }
+    nav { margin-bottom: 4rem; font-size: 0.9rem; }
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      margin: 0 1rem;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: var(--accent); }
+    .step-title {
+      display: flex;
+      align-items: center;
+      font-size: 0.9rem;
+      margin-top: 3rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      text-transform: lowercase;
+      letter-spacing: 1px;
+    }
+    .step-num {
+      color: var(--urgent);
+      font-weight: bold;
+      margin-right: 0.75rem;
+      font-size: 0.7rem;
+    }
+    .code-container {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--urgent);
+      text-align: left;
+      border-radius: 0 4px 4px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    pre {
+      padding: 1rem; margin: 0;
+      font-size: 0.8rem; overflow-x: auto;
+      white-space: pre-wrap; word-break: break-all;
+    }
+    code {
+      font-family: '0xProto Nerd Font Mono', monospace;
+      color: var(--fg);
+      opacity: 0.9;
+    }
+    .code-container::-webkit-scrollbar { height: 4px; }
+    .code-container::-webkit-scrollbar-thumb { background: var(--border); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Sietch Tabr</h1>
+    <div class="sub-header">>_ the deep desert archive</div>
+  </header>
+
+  <nav>
+    <a href="./dists/">[ dists ]</a>
+    <a href="./pool/">[ pool ]</a>
+    <a href="./keys/">[ keys ]</a>
+  </nav>
+
+  <main>
+    <div class="step-title"><span class="step-num">01</span> /trust the key</div>
+    <div class="code-container">
+    <pre><code>wget -qO - {{ %REPO_URL% }}/keys/{{ %GPG_KEY% }} | gpg --dearmor | \
+sudo tee /usr/share/keyrings/sietch-tabr-archive-keyring.gpg > /dev/null</code></pre>
+    </div>
+
+    <div class="step-title"><span class="step-num">02</span> /add sources</div>
+    <div class="code-container">
+      <pre><code>echo "deb [arch=amd64 signed-by=/usr/share/keyrings/sietch-tabr-archive-keyring.gpg] \
+https://deb.example.com trixie main" | sudo tee /etc/apt/sources.list.d/sietch-tabr.list</code></pre>
+    </div>
+
+    <div class="step-title"><span class="step-num">03</span> /sync & install</div>
+    <div class="code-container">
+        <pre><code>sudo apt update && sudo apt install -y {{ %packages% }}</code></pre>
+    </div>
+  </main>
+
+</body>
+</html>
