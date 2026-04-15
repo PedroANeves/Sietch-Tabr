@@ -31,3 +31,13 @@ sed "s/SignWith: .*\!/SignWith: $(gpg -k Alice | grep -Po "      \K[0-9A-F]{40}"
 
 ### Run test
 `make test`
+
+## Adding New Packages
+Add a executable `./packages/<package_name>.sh` with the functions:
+- `latest`: prints the latest semver for package, e.g. `0.60.0`.
+- `download`: downloads a `<package_name>.tar.gz` into `./build/sources/<package_name>/`
+- `build`: uses `./build/sources/<package_name>/<package_name>.tar.gz` to
+    generate a `./build/debs/<package_name>/<package_name>_<version>_amd64.deb`
+
+There are a couple of helper functions on `./scripts/utils.sh`,
+import them with `. scripts/utils.sh` (mainly dealing with GitHub API)
