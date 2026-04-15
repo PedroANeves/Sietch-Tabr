@@ -67,6 +67,7 @@ build: # Builds repository.
 
 	./scripts/check_updates.sh
 	./scripts/download_release.sh
+	./scripts/build_debs.sh
 
 ###############################################################################
 # Test
