@@ -1,0 +1,79 @@
+name: Repository CI/CD
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Install Podman & GPG
+        run: sudo apt-get update && sudo apt-get install -y podman gpg
+
+      - name: Import GPG Subkey
+        run: |
+          export GNUPG_HOME="${PWD}/.gnupg"
+          mkdir -p .gnupg
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
+
+      - name: Download Last Release Packages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p build/debs
+          LAST="$(gh release list --limit 1 | cut -d ' ' -f 1 || true)"
+          if [[ -n "$LAST" ]]; then
+            echo "Found '$LAST' release, downloading ..."
+            gh release download "${LAST}" --dir ./build/debs/ --pattern "*.deb" || true
+          else
+            echo "No previous release found, skipping ..."
+          fi
+
+      - name: Build and Sign Repository
+        run: make build
+
+      - name: Test Adding Key/Syncing Repo/Installation
+        run: make test
+
+      - name: Check for versions.ini changes
+        id: check_versions
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        run: |
+          if git diff HEAD^ HEAD --name-only | grep -q 'packages/versions.ini'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload deb Packages
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push' && steps.check_versions.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          RELEASE_TAG="$(date +'%Y-%m-%d_%H:%M:%S')"
+          echo "Creating release: $RELEASE_TAG"
+
+          gh create release "$RELEASE_TAG" \
+            --title "Build: $RELEASE_TAG" \
+            --notes "$(cat packages/versions.ini)" \
+            --repo ${{ github.repository }}
+
+          gh release upload "$RELEASE_TAG" ./build/debs/*.deb \
+            --repo ${{ github.repository }}
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: public
+          branch: pages

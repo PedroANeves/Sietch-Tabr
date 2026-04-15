@@ -1,5 +1,10 @@
 # Sietch Tabr
+[![Repository CI/CD](https://github.com/PedroANeves/Sietch-Tabr/actions/workflows/ci.yml/badge.svg)](https://github.com/USER/REPO/actions/workflows/ci.yml)
+[![Wind Traps (Updater)](https://github.com/PedroANeves/Sietch-Tabr/actions/workflows/update.yml/badge.svg)](https://github.com/USER/REPO/actions/workflows/update.yml)
+
 Personal APT Repository using `reprepro` deployed as static pages.
+
+Every day checks for newer packages.
 
 [Currently deployed packages and their versions.](./packages/versions.ini)
 
