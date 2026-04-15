@@ -47,6 +47,7 @@ stop-serve: # Safely stops localhost apt repository.
 clean: # Removes generated public artifacts.
 	rm -fr public/*
 	rm -fr build/*
+	rm -fr db/*
 
 ###############################################################################
 # Build
@@ -68,6 +69,10 @@ build: # Builds repository.
 	./scripts/check_updates.sh
 	./scripts/download_release.sh
 	./scripts/build_debs.sh
+
+	@for d in build/debs/*.deb; do \
+		$(DEV_CONTAINER) reprepro includedeb $(CODENAME) $$d; \
+	done
 
 ###############################################################################
 # Test
