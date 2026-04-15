@@ -46,6 +46,7 @@ stop-serve: # Safely stops localhost apt repository.
 .PHONY: clean
 clean: # Removes generated public artifacts.
 	rm -fr public/*
+	rm -fr build/*
 
 ###############################################################################
 # Build
@@ -65,6 +66,7 @@ build: # Builds repository.
 	$(DEV_CONTAINER) reprepro createsymlinks
 
 	./scripts/check_updates.sh
+	./scripts/download_release.sh
 
 ###############################################################################
 # Test
@@ -73,6 +75,11 @@ build: # Builds repository.
 REPO_URL = http://localhost:8080
 .PHONY: test
 test: dev-init build # Runs install against http://localhost:8080
+	@echo "Running ./scripts/ Test..."
+	$(CONTAINER_ENGINE) run --rm \
+		-v $(shell pwd)/tests/test_scripts.sh:/opt/test_scripts.sh:Z,ro \
+		-v $(shell pwd)/scripts:/repo/scripts:Z,ro \
+		$(DEV_IMG) "/opt/test_scripts.sh"
 	@echo "Running End-to-End Repository Test..."
 	$(MAKE) stop-serve
 	$(MAKE) serve
