@@ -64,6 +64,7 @@ build: # Builds repository.
 
 	$(DEV_CONTAINER) reprepro createsymlinks
 
+	./scripts/check_updates.sh
 
 ###############################################################################
 # Test
