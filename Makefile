@@ -15,6 +15,17 @@ DEV_IMG = sietch-tabr-dev:latest
 dev-init: dev.Containerfile # Builds dev container.
 	$(CONTAINER_ENGINE) build -t $(DEV_IMG) -f dev.Containerfile .
 
+INTERACTIVE := $(shell [ -t 0 ] && echo "-it" || echo "-i")
+DEV_CONTAINER = $(CONTAINER_ENGINE) run $(INTERACTIVE) --rm \
+	-v $(shell pwd):/repo:Z \
+	-v $(shell pwd)/.gnupg:/root/.gnupg:Z \
+	-e GPG_TTY=/dev/pts/0 \
+	$(DEV_IMG)
+.PHONY: dev
+dev: dev-init # Developer Container.
+	mkdir -p ./.gnupg/
+	$(DEV_CONTAINER)
+
 SERVER_CONTAINER = sietch-tabr-server
 .PHONY: serve
 serve: # Serve localhost apt repository.
@@ -49,6 +60,10 @@ build: # Builds repository.
 		-e "s|{{ %REPO_URL% }}|$(REPO_URL)|" \
 		-e "s|{{ %GPG_KEY% }}|$(GPG_KEY)|" \
 		index.html.template > public/index.html
+	cp -r keys/ public/
+
+	$(DEV_CONTAINER) reprepro createsymlinks
+
 
 ###############################################################################
 # Test
