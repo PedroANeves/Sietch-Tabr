@@ -27,6 +27,9 @@ jobs:
           mkdir -p .gnupg
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
 
+          echo "$(GNUPGHOME=./.gnupg/ gpg --list-secret-keys --with-colons | \
+            grep '^fpr' | cut -d: -f10):6:" | GNUPGHOME=./.gnupg/ gpg --import-ownertrust
+
       - name: Download Last Release Packages
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
