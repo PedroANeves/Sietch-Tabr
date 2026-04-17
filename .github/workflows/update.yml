@@ -34,6 +34,9 @@ jobs:
             git config user.name "github-actions"
             git config user.email "github-actions@users.noreply.github.com"
             git add packages/versions.ini
+            FROZEN_TIMESTAMP="$(date -u +"%Y-%m-%d")T00:00:00+0000"
+            GIT_AUTHOR_DATE="$FROZEN_TIMESTAMP" \
+            GIT_COMMITTER_DATE="$FROZEN_TIMESTAMP" \
             git commit -m "Auto Updated Versions" -m "${VERSIONS}"
             git push
           else
