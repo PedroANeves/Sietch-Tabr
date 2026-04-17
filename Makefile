@@ -55,7 +55,7 @@ clean: # Removes generated public artifacts.
 PACKAGES_LIST := $(shell sed 's/=.*//' ./packages/versions.ini | xargs)
 
 .PHONY: build
-build: # Builds repository.
+build: dev-init # Builds repository.
 	mkdir -p public/
 	cp -r static/* public/
 	sed \
