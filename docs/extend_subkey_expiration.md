@@ -27,6 +27,8 @@ Then `save`.
 gpg --export --armor Alice > alice.pub.asc
 gpg --export-secret-subkeys --armor Alice | base64 -w 0 > gh_secret_key.txt
 ```
+Update the `GPG_PRIVATE_KEY` on GitHub Actions Secrets
+with the contents of `gh_secret_key.txt`.
 
 ## Update Repository
 `alice.pub.asc` goes into `./keys/`.

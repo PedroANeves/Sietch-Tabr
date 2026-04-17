@@ -28,7 +28,7 @@ use the dev container with `make dev gpg ...`.
 ### Update The Signing Key Id fingerprint
 ```bash
 cat path/to/alice.pub.asc | gpg --import --dearmor
-sed "s/SignWith: .*\!/SignWith: $(gpg -k Alice | grep -Po "      \K[0-9A-F]{40}")\!/" conf/distributions
+sed "s/SignWith: .*\!/SignWith: $(gpg -K --keyid-format LONG Alice | grep -Po "^ssb   rsa4096\K[0-9A-F]{16}")\!/" conf/distributions
 ```
 
 ### Add Sub Key to local gpg directory
