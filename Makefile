@@ -94,4 +94,4 @@ test: dev-init build # Runs install against http://localhost:8080
 	$(CONTAINER_ENGINE) run --rm \
 		--network=host \
 		-v $(shell pwd)/tests/test_sietch.sh:/opt/test_sietch.sh:Z,ro \
-		$(DEV_IMG) "/opt/test_sietch.sh" "$(REPO_URL)" "$(GPG_KEY)" "$(CODENAME)" "$(PACKAGES_LIST)"
+		$(DEV_IMG) "/opt/test_sietch.sh" "http://localhost:8080" "$(GPG_KEY)" "$(CODENAME)" "$(PACKAGES_LIST)"

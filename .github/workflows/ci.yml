@@ -13,7 +13,7 @@ jobs:
   pipeline:
     runs-on: ubuntu-latest
     env:
-      REPO_URL: http:deb.codices.one
+      REPO_URL: http://deb.codices.one
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -28,7 +28,6 @@ jobs:
           export GNUPGHOME="${PWD}/.gnupg"
           mkdir -p .gnupg
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
-
 
       - name: Download Last Release Packages
         env:
