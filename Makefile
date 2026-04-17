@@ -1,6 +1,7 @@
 CONTAINER_ENGINE = podman
 CODENAME = trixie
 GPG_KEY = sietch-tabr.pub.asc
+REPO_URL ?= http://localhost:8080
 
 .PHONY: help
 help: # Show this help.
@@ -80,7 +81,6 @@ build: dev-init # Builds repository.
 # Test
 ###############################################################################
 
-REPO_URL = http://localhost:8080
 .PHONY: test
 test: dev-init build # Runs install against http://localhost:8080
 	@echo "Running ./scripts/ Test..."

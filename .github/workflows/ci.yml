@@ -12,6 +12,8 @@ permissions:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
+    env:
+      REPO_URL: http:deb.codices.one
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
