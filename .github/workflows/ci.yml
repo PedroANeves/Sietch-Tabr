@@ -23,7 +23,7 @@ jobs:
 
       - name: Import GPG Subkey
         run: |
-          export GNUPG_HOME="${PWD}/.gnupg"
+          export GNUPGHOME="${PWD}/.gnupg"
           mkdir -p .gnupg
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
 
