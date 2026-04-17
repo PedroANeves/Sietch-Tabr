@@ -20,10 +20,13 @@ DEV_CONTAINER = $(CONTAINER_ENGINE) run $(INTERACTIVE) --rm \
 	-v $(shell pwd):/repo:Z \
 	-v $(shell pwd)/.gnupg:/root/.gnupg:Z \
 	-e GPG_TTY=/dev/pts/0 \
+	-e GNUPGHOME=/root/.gnupg \
 	$(DEV_IMG)
 .PHONY: dev
 dev: dev-init # Developer Container.
 	mkdir -p ./.gnupg/
+	echo "allow-loopback-pinentry" > .gnupg/gpg-agent.conf
+	echo "pinentry-mode loopback" > .gnupg/gpg.conf
 	$(DEV_CONTAINER)
 
 SERVER_CONTAINER = sietch-tabr-server
@@ -72,7 +75,7 @@ build: dev-init # Builds repository.
 	./scripts/build_debs.sh
 
 	@for d in build/debs/*.deb; do \
-		$(DEV_CONTAINER) reprepro includedeb $(CODENAME) $$d; \
+		$(DEV_CONTAINER) reprepro --ask-passphrase includedeb $(CODENAME) $$d; \
 	done
 
 ###############################################################################
