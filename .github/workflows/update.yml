@@ -10,8 +10,9 @@ on:
   push:
     paths:
       - 'packages/*.sh'
-  permissions:
-    contents: write
+
+permissions:
+  contents: write
 
 jobs:
   update:
