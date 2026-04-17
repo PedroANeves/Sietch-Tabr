@@ -1,0 +1,6 @@
+Archive: stable
+Component: main
+Origin: Linux Al-Gaib
+Label: Sietch Tabr
+Architecture: amd64
+Description: Custom packages for the Arrakis ecosystem.
