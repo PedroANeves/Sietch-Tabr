@@ -13,6 +13,7 @@ help: # Show this help.
 DEV_IMG = sietch-tabr-dev:latest
 .PHONY: dev-init
 dev-init: dev.Containerfile # Builds dev container.
+	mkdir -p ./.gnupg/
 	$(CONTAINER_ENGINE) build -t $(DEV_IMG) -f dev.Containerfile .
 
 INTERACTIVE := $(shell [ -t 0 ] && echo "-it" || echo "-i")
@@ -24,9 +25,6 @@ DEV_CONTAINER = $(CONTAINER_ENGINE) run $(INTERACTIVE) --rm \
 	$(DEV_IMG)
 .PHONY: dev
 dev: dev-init # Developer Container.
-	mkdir -p ./.gnupg/
-	echo "allow-loopback-pinentry" > .gnupg/gpg-agent.conf
-	echo "pinentry-mode loopback" > .gnupg/gpg.conf
 	$(DEV_CONTAINER)
 
 SERVER_CONTAINER = sietch-tabr-server
@@ -75,7 +73,7 @@ build: dev-init # Builds repository.
 	./scripts/build_debs.sh
 
 	@for d in build/debs/*.deb; do \
-		$(DEV_CONTAINER) reprepro --ask-passphrase includedeb $(CODENAME) $$d; \
+		$(DEV_CONTAINER) reprepro includedeb $(CODENAME) $$d; \
 	done
 
 ###############################################################################
