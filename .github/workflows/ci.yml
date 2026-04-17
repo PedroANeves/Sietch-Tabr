@@ -30,6 +30,11 @@ jobs:
           echo "$(GNUPGHOME=./.gnupg/ gpg --list-secret-keys --with-colons | \
             grep '^fpr' | cut -d: -f10):6:" | GNUPGHOME=./.gnupg/ gpg --import-ownertrust
 
+          echo "allow-loopback-pinentry" > .gnupg/gpg-agent.conf
+          gpgconf --kill gpg-agent
+
+          gpg --list-secret-keys --with-colons
+
       - name: Download Last Release Packages
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
