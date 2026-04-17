@@ -5,41 +5,41 @@ Origin: Linux Al-Gaib
 Label: Sietch Tabr
 Suite: stable
 Codename: trixie
-Date: Fri, 17 Apr 2026 20:59:14 UTC
+Date: Fri, 17 Apr 2026 21:58:57 UTC
 Architectures: amd64
 Components: main
 Description: Custom packages for the Arrakis ecosystem.
 MD5Sum:
- 191de10c888fda57e7a0080775af78e2 436 main/binary-amd64/Packages
- 0105f4c19d8d90bdb5b9139d94372788 338 main/binary-amd64/Packages.gz
+ fe5b1135ec0c63e847b9de01a04bd851 436 main/binary-amd64/Packages
+ 07757e7b51a438ae5052e84ce300085a 336 main/binary-amd64/Packages.gz
  e852c2ab8f7aea21823d2208468a875e 149 main/binary-amd64/Release
  9217871e53e8d78b50502152b7bd4836 36 main/Contents-amd64
  ee04396fc09bb91f9233cdb2e24763e2 48 main/Contents-amd64.gz
 SHA1:
- 61d3d75f6a4e6fe110a2acc1df5551f5e8735c6b 436 main/binary-amd64/Packages
- 2d2806bde8c91a367f010a5e6b8c2a868d4a7b77 338 main/binary-amd64/Packages.gz
+ 5616ffadc1955c69d4e2a2b793e50b487bd0dac3 436 main/binary-amd64/Packages
+ fb3d10fa38be25271073f72ab3584ca17c3edd07 336 main/binary-amd64/Packages.gz
  812a27d816a71d77c7950c04d895178e5b253b12 149 main/binary-amd64/Release
  db71c60f852341252a3c4c236fdc316fdedaf00b 36 main/Contents-amd64
  0f4083a719270403fd5c37c51e2b707606459bdd 48 main/Contents-amd64.gz
 SHA256:
- 8673a712d62851c4768cf23c2253eec598c9c49cd9785bf103fc5617d69c6be6 436 main/binary-amd64/Packages
- c1ee0396e477bfb79bc933393074dbe565a7f0e9b0b9d881a50d02b6afcbd8c2 338 main/binary-amd64/Packages.gz
+ ef11b8c06716668a0eaa8ba22e3c8fddc6ea4b9ec9c0c42422e657bcd10a8382 436 main/binary-amd64/Packages
+ 84b60b80670409300b21f592414f3921186d6dbc6658ebb5488f46e3a3bc2978 336 main/binary-amd64/Packages.gz
  ee5594771b06635c70f6523ee0f58e4af1f9446ebebc054fc48dc0e9e2762165 149 main/binary-amd64/Release
  283040abe99557f6c24c8639dbf9f7a4e0b4fa2de9b8bdd39d55da4458e15802 36 main/Contents-amd64
  318c08b4362c0435674093f51f8f8e3e910f69382cb4de12bd101bd22630530e 48 main/Contents-amd64.gz
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEiz1Z5HA1gTUL12PMRcqQbtrnEkIFAmninyIACgkQRcqQbtrn
-EkJZ4w//fjdtA3pDyraSzL1wzlMvctZMkkewD+Wa1KAHsTqRtcavvehjg4ss/+d4
-TGt8iAmiMPD+/TUZYP4FB+aFyLfK5Dxyq51O8UoRQ+SRyjxsQ2XrlHyKwmFTPNz7
-ThHE6X0d4hdbENP+r0AbL4VikVMbrNgML8yllk7LV/uh6qWtXs+IQYdz/pd0xnT8
-kKUHJ2FBGM8NnsnZEECX8FnmRvS9qkhEwdh0ArsMUUiwhSkdR+uO6ochk+geoaaN
-ErBnw3GpE08aeRrRqWVXpA4/MMPm/uzTpmNfo5NQrAHDHpucDF0OQ9ktOE/DjwD8
-Ker6xPeP8t2Vdi8EpVbRFjg5TYnor6ccBssJHfBVpj94Oe4A9aErORLDhgnAoCkt
-C1/36XHZpx+AL7NY6poxunjxJEa86utE677HM852mc6HpWYxG8MS8jy4zP2vnZ1B
-+V7wFGGAGEUwxTNjJ6AjNMuwuAL0jfB87eb3SdRUgxDGMlKO9RuliLanumNUEHSj
-zdXbp9lT6frc4kbDzkKN2ATNhRyo8M0B/qD4Wke7/Z6BbpDih02xyjt1rGthrDi5
-sRv3a/Vqgb9dSJh1/3BHotKZSMsXKicYTmAXVe79mt5+Up/vUaMotYZmWw6bO8bh
-sOj12ECxWUkz56SQHOLYnuzGtYu+IEsH0NG8FG4VEZOF+5tgfRA=
-=4b3r
+iQIzBAEBCgAdFiEEiz1Z5HA1gTUL12PMRcqQbtrnEkIFAmnirSEACgkQRcqQbtrn
+EkKT2Q/7B/HmJ0HOIE5ip9iKC1VFSPVXTA6OEkNQF2HThXxvO1zCqEfG7sUOPJ4W
+jAolHhzv5pzBZ4N7XvH+SqLurbMTCBB5out2+4U29gSuRgTFrOz2om8pdKT8vnWd
+6iK8rHglN3Qj0wBY4OCcOl2mBlKE5E/4+xw/UEFijdp0ecj5IIlluT/6Wr4X51pe
+N+9p9CwX8yno5Fzz2Y9pQAz29nrBXAKLTijHMuhg7qMwyGkS3Q5AkmJUOuKdg23R
+atx4Y5/LTxhOsaHj4GU3EKhHkLtypJd5KkLIr6BsXA91/6Xvekg/dI8/D1yFMX+8
+nCcjPQ/L2OjhjAL/p9k9R5RdcicMWxzF02XegAquRHXqW0loYok9YEXXPRG8xGjf
+dDum698IbwgO7PPgCbT+XelgXYDLlFdOri9NGRtlPXdEeIyo+YbSdzReI5USGShm
+WCAXnETgGNIfI2Kx3DFFDOADsIsHCod8t+sLwu1Lg9fPIksZNzvXwy5HmZ4g1cxO
+S2TmEDTFO1b8074/TYGLcM2/KN5iLBSabyLl1II9LwiGxMBAk2/9LGslH0J2rB91
+HABvKWGN5ZI4Udo6rz0vzIJc9fWGLqBbSdxtsKgUs0lc/JtddEiETvbWZGgJwWIH
+Cu8bbh/kBgOWqwlTVm/BRTdf64msdMXNJ3ir2rGSAH9TQvijxXw=
+=VT3V
 -----END PGP SIGNATURE-----
