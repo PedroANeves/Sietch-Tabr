@@ -25,6 +25,7 @@ jobs:
         run: |
           export GNUPG_HOME="${PWD}/.gnupg"
           mkdir -p .gnupg
+          chown 700 .gnupg
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
 
       - name: Download Last Release Packages
