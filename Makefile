@@ -28,6 +28,7 @@ DEV_CONTAINER = $(CONTAINER_ENGINE) run $(INTERACTIVE) --rm \
 	-v $(shell pwd)/.gnupg:/root/.gnupg:Z \
 	-e GPG_TTY=/dev/pts/0 \
 	-e GNUPGHOME=/root/.gnupg \
+	--network=host \
 	$(DEV_IMG)
 .PHONY: dev
 dev: dev-init # Developer Container.
