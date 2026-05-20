@@ -92,6 +92,7 @@
 
   <nav>
     <a href="https://github.com/PedroANeves/Sietch-Tabr">[ source code ]</a>
+    <a href="./versions.ini">[ packages versions ]</a>
     <a href="./keys/sietch-tabr.pub.asc">[ public key ]</a>
   </nav>
 
