@@ -1,7 +1,12 @@
 CONTAINER_ENGINE = podman
 CODENAME = trixie
 GPG_KEY = sietch-tabr.pub.asc
-REPO_URL ?= http://localhost:8080
+
+ifneq ($(wildcard static/CNAME),)
+    REPO_URL ?= https://$(strip $(shell cat static/CNAME))
+else
+    REPO_URL ?= http://localhost:8080
+endif
 
 .PHONY: help
 help: # Show this help.
