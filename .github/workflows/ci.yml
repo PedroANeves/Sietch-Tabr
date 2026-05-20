@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   pipeline:
@@ -72,9 +74,13 @@ jobs:
           gh release upload "$RELEASE_TAG" ./build/debs/*.deb \
             --repo ${{ github.repository }}
 
+      - name: Upload Pages Artifact
+        if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: public
-          branch: pages
+        id: deployment
+        uses: actions/deploy-pages@v5
