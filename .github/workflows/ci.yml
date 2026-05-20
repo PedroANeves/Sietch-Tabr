@@ -13,7 +13,7 @@ jobs:
   pipeline:
     runs-on: ubuntu-latest
     env:
-      REPO_URL: http://deb.codices.one
+      REPO_URL: https://deb.codices.one
     steps:
       - name: Checkout Code
         uses: actions/checkout@v6
@@ -47,6 +47,8 @@ jobs:
 
       - name: Test Adding Key/Syncing Repo/Installation
         run: make test
+        env:
+          REPO_URL: http://localhost:8080
 
       - name: Check for versions.ini changes
         id: check_versions
