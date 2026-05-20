@@ -75,7 +75,7 @@
       white-space: pre-wrap; word-break: break-all;
     }
     code {
-      font-family: '0xProto Nerd Font Mono', monospace;
+      font-family: monospace;
       color: var(--fg);
       opacity: 0.9;
     }
