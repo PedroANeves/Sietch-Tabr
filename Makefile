@@ -66,7 +66,7 @@ PACKAGES_LIST := $(shell sed 's/=.*//' ./packages/versions.ini | xargs)
 build: dev-init # Builds repository.
 	mkdir -p public/
 	cp -r static/* public/
-	cp packages/versions.ini public/
+	cp packages/versions.ini public/versions.txt
 	sed \
 		-e 's/{{ %packages% }}/$(PACKAGES_LIST)/' \
 		-e "s|{{ %REPO_URL% }}|$(REPO_URL)|" \
