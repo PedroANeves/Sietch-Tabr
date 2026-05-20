@@ -13,6 +13,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   update:
@@ -25,20 +26,41 @@ jobs:
         run: |
           ./scripts/check_updates.sh
 
-      - name: Commit Any Updates
+      - name: Process Package Changes
+        id: process_changes
         run: |
           if ! git diff --quiet packages/versions.ini; then
             VERSIONS="$(cat packages/versions.ini)"
             echo "Packages Updates Found!"
             echo "${VERSIONS}"
-            git config user.name "github-actions"
-            git config user.email "github-actions@users.noreply.github.com"
-            git add packages/versions.ini
-            FROZEN_TIMESTAMP="$(date -u +"%Y-%m-%d")T00:00:00+0000"
-            GIT_AUTHOR_DATE="$FROZEN_TIMESTAMP" \
-            GIT_COMMITTER_DATE="$FROZEN_TIMESTAMP" \
-            git commit -m "Auto Updated Versions" -m "${VERSIONS}"
-            git push
+
+            COUNT=$(git diff packages/versions.ini | grep -E "^\+[A-Za-z0-9]" | grep -c "=" || true)
+
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "count=${COUNT}" >> $GITHUB_OUTPUT
           else
             echo "No package updates."
+            echo "changed=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Create Pull Request
+        if: steps.process_changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat: automated package updates"
+          branch: auto-update-packages
+          delete-branch: true
+          title: "Automated Package Updates (${{ steps.process_changes.outputs.count }} updated)"
+          body: |
+            ### System Scan Report
+            The automated package monitoring suite has caught version upgrades.
+
+            #### Updated package signatures manifest:
+            ```ini
+            $(cat packages/versions.ini)
+            ```
+            *Review test validation check outputs prior to staging target mergers.*
+          labels: |
+            automated-pr
+            dependencies
