@@ -20,10 +20,9 @@ apt-get update \
 -o Dir::Etc::sourceparts="-" \
 -o APT::Get::List-Cleanup="0"
 
-DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  "${PACKAGES}"
+DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES
 
-for p in "${PACKAGES}"; do
+for p in $PACKAGES; do
   if command -v "${p}" >/dev/null 2>&1 ; then
     echo "${p} installed. [$("${p}" --version)]"
   else
