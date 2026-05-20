@@ -75,7 +75,7 @@
       white-space: pre-wrap; word-break: break-all;
     }
     code {
-      font-family: '0xProto Nerd Font Mono', monospace;
+      font-family: monospace;
       color: var(--fg);
       opacity: 0.9;
     }
@@ -99,14 +99,14 @@
   <main>
     <div class="step-title"><span class="step-num">01</span> /trust the key</div>
     <div class="code-container">
-    <pre><code>wget -qO - http://localhost:8080/keys/sietch-tabr.pub.asc | gpg --dearmor | \
+    <pre><code>wget -qO - https://deb.codices.one/keys/sietch-tabr.pub.asc | gpg --dearmor | \
 sudo tee /usr/share/keyrings/sietch-tabr-archive-keyring.gpg > /dev/null</code></pre>
     </div>
 
     <div class="step-title"><span class="step-num">02</span> /add sources</div>
     <div class="code-container">
       <pre><code>echo "deb [arch=amd64 signed-by=/usr/share/keyrings/sietch-tabr-archive-keyring.gpg] \
-http://localhost:8080 trixie main" | sudo tee /etc/apt/sources.list.d/sietch-tabr.list > /dev/null</code></pre>
+https://deb.codices.one trixie main" | sudo tee /etc/apt/sources.list.d/sietch-tabr.list > /dev/null</code></pre>
     </div>
 
     <div class="step-title"><span class="step-num">03</span> /sync & install</div>

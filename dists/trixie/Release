@@ -2,25 +2,25 @@ Origin: Linux Al-Gaib
 Label: Sietch Tabr
 Suite: stable
 Codename: trixie
-Date: Wed, 20 May 2026 20:18:18 UTC
+Date: Wed, 20 May 2026 20:49:17 UTC
 Architectures: amd64
 Components: main
 Description: Custom packages for the Arrakis ecosystem.
 MD5Sum:
- ce13ce5ff3201d3110599511aa70744e 436 main/binary-amd64/Packages
- ab482599d020088663501ddb1a8883c2 338 main/binary-amd64/Packages.gz
+ 84bd1b68d39e3530b4830f75d54df3c8 436 main/binary-amd64/Packages
+ cd26f7afa2bf95c0474ba8393f5b28c7 338 main/binary-amd64/Packages.gz
  e852c2ab8f7aea21823d2208468a875e 149 main/binary-amd64/Release
  9217871e53e8d78b50502152b7bd4836 36 main/Contents-amd64
  ee04396fc09bb91f9233cdb2e24763e2 48 main/Contents-amd64.gz
 SHA1:
- 3828eb1d148cb48116c90c4677d886aef8b26fbc 436 main/binary-amd64/Packages
- e9dffd24c46a5f5b0ffa80e0a3d67e87bbbfdff9 338 main/binary-amd64/Packages.gz
+ b01f66d7e8de0c4c0cb3c8cea55a9a8c7387049d 436 main/binary-amd64/Packages
+ dba94ad4a2b7ebec5770502c90ffa9fca8a1ae86 338 main/binary-amd64/Packages.gz
  812a27d816a71d77c7950c04d895178e5b253b12 149 main/binary-amd64/Release
  db71c60f852341252a3c4c236fdc316fdedaf00b 36 main/Contents-amd64
  0f4083a719270403fd5c37c51e2b707606459bdd 48 main/Contents-amd64.gz
 SHA256:
- 8ef6ae466e36afb8f06c432f74b6643593f6ecfd2af264328a6dfcb8768e9900 436 main/binary-amd64/Packages
- d8c8948a8d733a831ef21155ec6d25dbe103beade288f79d00341e1c2324da03 338 main/binary-amd64/Packages.gz
+ df275ccc5722bfba96d55b60dd0e62eb47108ef5afa0dfb1ef23415b76c05a6d 436 main/binary-amd64/Packages
+ 4debe4534caffe825abe2f753dfb3b28177c95a704b21565115fd3cc776a2141 338 main/binary-amd64/Packages.gz
  ee5594771b06635c70f6523ee0f58e4af1f9446ebebc054fc48dc0e9e2762165 149 main/binary-amd64/Release
  283040abe99557f6c24c8639dbf9f7a4e0b4fa2de9b8bdd39d55da4458e15802 36 main/Contents-amd64
  318c08b4362c0435674093f51f8f8e3e910f69382cb4de12bd101bd22630530e 48 main/Contents-amd64.gz
