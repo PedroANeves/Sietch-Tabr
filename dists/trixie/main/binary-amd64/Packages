@@ -5,9 +5,9 @@ Maintainer: Pedro A. Neves <PedroANeves@users.noreply.github.com>
 Priority: optional
 Section: default
 Filename: pool/main/l/lazygit/lazygit_0.61.1_amd64.deb
-Size: 5247112
-SHA256: 826ece4a337298ad9ad9af1b3ce91afdffce1f59b21fe29511d526300770ca02
-SHA1: d05792c522e8f21cbb01464053a506c32077728d
-MD5sum: 0d6b2cdbad8546a1c963b208a8283753
+Size: 5247016
+SHA256: a48fd9d5f38ee617ad6c56fb017b6770c42b7c9296f8a6957500941af5659077
+SHA1: 9c1df96620f70118aac800ef9f5f90c55713ca5a
+MD5sum: cb853d820e0b31781e61cf0a728ce29c
 Description: Simple terminal UI for git commands.
 
