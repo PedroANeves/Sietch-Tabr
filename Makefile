@@ -64,6 +64,7 @@ build: dev-init # Builds repository.
 		-e 's/{{ %packages% }}/$(PACKAGES_LIST)/' \
 		-e "s|{{ %REPO_URL% }}|$(REPO_URL)|" \
 		-e "s|{{ %GPG_KEY% }}|$(GPG_KEY)|" \
+		-e "s|{{ %CODENAME% }}|$(CODENAME)|" \
 		index.html.template > public/index.html
 	cp -r keys/ public/
 

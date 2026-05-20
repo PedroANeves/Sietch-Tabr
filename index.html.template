@@ -106,7 +106,7 @@ sudo tee /usr/share/keyrings/sietch-tabr-archive-keyring.gpg > /dev/null</code><
     <div class="step-title"><span class="step-num">02</span> /add sources</div>
     <div class="code-container">
       <pre><code>echo "deb [arch=amd64 signed-by=/usr/share/keyrings/sietch-tabr-archive-keyring.gpg] \
-https://deb.example.com trixie main" | sudo tee /etc/apt/sources.list.d/sietch-tabr.list</code></pre>
+{{ %REPO_URL% }} {{ %CODENAME% }} main" | sudo tee /etc/apt/sources.list.d/sietch-tabr.list > /dev/null</code></pre>
     </div>
 
     <div class="step-title"><span class="step-num">03</span> /sync & install</div>
