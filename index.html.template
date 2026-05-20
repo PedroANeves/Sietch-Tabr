@@ -93,7 +93,7 @@
   <nav>
     <a href="./dists/">[ dists ]</a>
     <a href="./pool/">[ pool ]</a>
-    <a href="./keys/">[ keys ]</a>
+    <a href="./keys/sietch-tabr.pub.asc">[ public key ]</a>
   </nav>
 
   <main>
