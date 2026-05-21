@@ -1,6 +1,7 @@
 # Sietch Tabr
 [![Repository CI/CD](https://github.com/PedroANeves/Sietch-Tabr/actions/workflows/ci.yml/badge.svg)](https://github.com/USER/REPO/actions/workflows/ci.yml)
 [![Wind Traps (Updater)](https://github.com/PedroANeves/Sietch-Tabr/actions/workflows/update.yml/badge.svg)](https://github.com/USER/REPO/actions/workflows/update.yml)
+[![Health Checks](https://github.com/PedroANeves/Sietch-Tabr/actions/workflows/health.yml/badge.svg)](https://github.com/USER/REPO/actions/workflows/health.yml)
 
 Personal APT Repository using `reprepro` deployed as static pages.
 

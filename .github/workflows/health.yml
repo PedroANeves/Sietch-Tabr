@@ -1,0 +1,217 @@
+name: Repository Health Check
+# Checks repo health:
+# - Every Friday at 10AM UTC
+
+on:
+  schedule:
+    - cron: "0 10 * * 5"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  # =======================================================================
+  # WORKER 1: STALE AUTOMATED PR CHECK
+  # =======================================================================
+  check-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Inspect PR Age
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Fetching target automated package branch data..."
+          PR_DATA=$(gh pr list --head auto-update-packages --state open --json number,createdAt --jq '.[0]')
+
+          if [ -z "$PR_DATA" ] || [ "$PR_DATA" = "null" ]; then
+            echo "No active package update branches detected. Safe."
+            exit 0
+          fi
+
+          PR_NUM=$(echo "$PR_DATA" | jq -r '.number')
+          CREATED_AT=$(echo "$PR_DATA" | jq -r '.createdAt')
+          AGE_DAYS=$(( ($(date +%s) - $(date -d "$CREATED_AT" +%s)) / 86400 ))
+          echo "Automated PR #$PR_NUM age: $AGE_DAYS days."
+
+          if [ $AGE_DAYS -lt 14 ]; then
+            echo "PR is under the 2-week stale threshold. Safe."
+            exit 0
+          fi
+
+          # Early return prevention: Skip adding multiple duplicate comments if hit recently
+          RECENT_COMMENT=$(gh pr view "$PR_NUM" --json comments --jq '.comments[] | select(.author.login=="github-actions") | .createdAt' | tail -n 1)
+          if [ -n "$RECENT_COMMENT" ]; then
+            DAYS_SINCE_COMMENT=$(( ($(date +%s) - $(date -d "$RECENT_COMMENT" +%s)) / 86400 ))
+            if [ $DAYS_SINCE_COMMENT -lt 7 ]; then
+              echo "A stale alert was already pushed $DAYS_SINCE_COMMENT days ago. Fail job to update badge, but skip spam."
+              exit 1
+            fi
+          fi
+
+          gh pr comment "$PR_NUM" --body "**Stale Infrastructure Alert**: This automated package upgrade pull request has been open for over 2 weeks without a merge. Please verify its installation statuses and clear the branch backlog."
+          exit 1 # Fail job to trigger red badge status
+
+  # =======================================================================
+  # WORKER 2: GPG KEY EXPIRATION CHECK
+  # =======================================================================
+  check-gpg:
+    runs-on: ubuntu-latest
+    outputs:
+      error_msg: ${{ steps.eval.outputs.msg }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate GPG Expiration Bounds
+        id: eval
+        run: |
+          KEY_PATH="public/keys/sietch-tabr.pub.asc"
+          if [ ! -f "$KEY_PATH" ]; then KEY_PATH="keys/sietch-tabr.pub.asc"; fi
+
+          if [ ! -f "$KEY_PATH" ]; then
+            echo "msg=Public key asset file missing at expected workspace paths." >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          EXP_DATE=$(gpg --show-keys "$KEY_PATH" | grep -E "expires:" | head -n 1 | awk '{print $3}')
+          if [ -z "$EXP_DATE" ]; then
+            echo "Cryptographic signature block has no expiration constraint!"
+            exit 1
+          fi
+
+          DAYS_LEFT=$(( ($(date -d "$EXP_DATE" +%s) - $(date +%s)) / 86400 ))
+          echo "GPG signature valid until $EXP_DATE ($DAYS_LEFT days remaining)."
+
+          if [ $DAYS_LEFT -le 30 ]; then
+            echo "msg=The repository public key file is set to expire in **$DAYS_LEFT days** ($EXP_DATE). Renew the cryptographic subkey before users experience broken apt verifications." >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+  # =======================================================================
+  # WORKER 3: DNS AVAILABILITY CHECK
+  # =======================================================================
+  check-dns:
+    runs-on: ubuntu-latest
+    outputs:
+      error_msg: ${{ steps.eval.outputs.msg }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Resolve CNAME Records
+        id: eval
+        run: |
+          if [ ! -f "static/CNAME" ]; then
+            echo "Static routing specification missing!"
+            exit 1
+          fi
+
+          DOMAIN=$(tr -d '[:space:]' < static/CNAME)
+          echo "Testing DNS lookups against target endpoint: $DOMAIN"
+
+          RESOLVED_IPS=$(dig +short "$DOMAIN" @1.1.1.1)
+          if [ -z "$RESOLVED_IPS" ]; then
+            echo "msg=The custom tracking endpoint **$DOMAIN** failed to resolve to public networking IPs. Check domain provider registrar configuration tables." >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          echo "Resolved domain to addresses: $RESOLVED_IPS. Safe."
+
+  # =======================================================================
+  # WORKER 4: SSL CERTIFICATE LIFESPAN CHECK
+  # =======================================================================
+  check-ssl:
+    runs-on: ubuntu-latest
+    outputs:
+      error_msg: ${{ steps.eval.outputs.msg }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate TLS Handshake Lifetime
+        id: eval
+        run: |
+          if [ ! -f "static/CNAME" ]; then
+            echo "Static configuration missing!"
+            exit 1
+          fi
+
+          DOMAIN=$(tr -d '[:space:]' < static/CNAME)
+          echo "Querying SSL parameters from remote endpoint: $DOMAIN"
+
+          SSL_DATA=$(timeout 5s openssl s_client -connect "${DOMAIN}:443" -servername "$DOMAIN" </dev/null 2>/dev/null | openssl x509 -noout -enddate || true)
+          if [ -z "$SSL_DATA" ]; then
+            echo "msg=Could not complete TLS handshake with remote host $DOMAIN." >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          END_DATE=$(echo "$SSL_DATA" | cut -d= -f2)
+          DAYS_LEFT=$(( ($(date -d "$END_DATE" +%s) - $(date +%s)) / 86400 ))
+          echo "SSL certificate mapping active until: $END_DATE ($DAYS_LEFT days remaining)."
+
+          if [ $DAYS_LEFT -le 7 ]; then
+            echo "msg=The live SSL security layer expires in **$DAYS_LEFT days**. GitHub automated renewal certificate pipelines might be failing or stuck." >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+  # =======================================================================
+  # AGGREGATOR: AUTOMATED ISSUE REMEDIATION MANAGEMENT
+  # =======================================================================
+  remediate:
+    runs-on: ubuntu-latest
+    needs: [check-pr, check-gpg, check-dns, check-ssl]
+    if: always()
+    steps:
+      - name: Process Operational Deviations
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_RESULT: ${{ needs.check-gpg.result }}
+          GPG_ERR: ${{ needs.check-gpg.outputs.error_msg }}
+          DNS_RESULT: ${{ needs.check-dns.result }}
+          DNS_ERR: ${{ needs.check-dns.outputs.error_msg }}
+          SSL_RESULT: ${{ needs.check-ssl.result }}
+          SSL_ERR: ${{ needs.check-ssl.outputs.error_msg }}
+        run: |
+          manage_issue() {
+            local COMPONENT="$1"
+            local RESULT="$2"
+            local ERR_MSG="$3"
+            local TITLE="[Health Check] Broken $COMPONENT System"
+
+            # If a component job skipped entirely, gracefully exit execution
+            if [ "$RESULT" = "skipped" ]; then return; fi
+
+            EXISTING_ISSUE=$(gh issue list --state open --search "$TITLE" --json number --jq '.[0].number')
+
+            if [ "$RESULT" = "failure" ]; then
+              if [ -n "$EXISTING_ISSUE" ]; then
+                echo "Incident remains open for $COMPONENT. Logging diagnostic update."
+                gh issue comment "$EXISTING_ISSUE" --body "🔄 **Status Update**: Background health check verification loops confirmed this condition is still active.
+
+                > $ERR_MSG"
+              else
+                echo "New incident discovered for $COMPONENT. Spawning tracking issue."
+                gh issue create --title "$TITLE" --body "🚨 **Automated Incident Report**
+
+                The background operations check caught an operational system degradation:
+
+                * **Component:** $COMPONENT
+                * **Error Context:** $ERR_MSG
+
+                *Remediate system variable bounds to clear tracker entries.*" --label "bug,automated-pr"
+              fi
+            elif [ "$RESULT" = "success" ] && [ -n "$EXISTING_ISSUE" ]; then
+              echo "System recovered for $COMPONENT. Resolving issue #$EXISTING_ISSUE."
+              gh issue comment "$EXISTING_ISSUE" --body "✅ **Resolution Check**: Background health check verification loops passed successfully. The issue is confirmed fixed. Closing tracking thread."
+              gh issue close "$EXISTING_ISSUE" --reason "completed"
+            fi
+          }
+
+          manage_issue "GPG Key" "$GPG_RESULT" "$GPG_ERR"
+          manage_issue "DNS Network Routing" "$DNS_RESULT" "$DNS_ERR"
+          manage_issue "SSL Certificate" "$SSL_RESULT" "$SSL_ERR"
