@@ -15,12 +15,9 @@ download() {
   local version=$1
   local directory=$2
 
-  local name="${repo#*/}"
   local filename="nvim-linux-x86_64.tar.gz"
 
-  echo "Downloading ${name} v${version} from GitHub ..."
-  wget -O "${directory}/${name}.tar.gz" \
-    "https://github.com/${repo}/releases/download/v${version}/${filename}"
+  _download_file_from_gh "${repo}" "${filename}" "${version}" "${directory}"
 }
 
 build() {

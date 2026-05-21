@@ -21,19 +21,20 @@ _version_from_gh_api(){
   wget -qO - "${gh_api_url}" | grep -Po '"tag_name": *"v\K[^"]+'
 }
 
-_download_tar_gz_from_gh(){
-  # _download_tar_gz_from_gh 'user/project' '1.2.3' ./build/sources/<package>
+_download_file_from_gh(){
+  # _download_file_from_gh 'user/project' '%name%_1.2.3_Linux_x86_64.tar.gz' '1.2.3' ./build/sources/<package>
   #
   # Releases from GitHub are files '<name>_<version>_Linux_x86_64.tar.gz' tagged 'v<version>'
   #
-  [[ $# == 3 ]] \
-    || die "Usage: _download_tar_gz_from_gh 'user/project' '1.2.3' path/to/sources/<package>"
+  [[ $# == 4 ]] \
+    || die "Usage: _download_file_from_gh 'user/project' '%name%_1.2.3_Linux_x86_64.tar.gz' '1.2.3' path/to/sources/<package>"
   local repo=$1
-  local version=$2
-  local directory=$3
+  local filename_fmt=$2
+  local version=$3
+  local directory=$4
 
   local name="${repo#*/}"
-  local filename="${name}_${version}_Linux_x86_64.tar.gz"
+  local filename="$(echo "${filename_fmt}" | sed -e "s/%name%/${name}/" )"
 
   echo "Downloading ${name} v${version} from GitHub ..."
   wget -O "${directory}/${name}.tar.gz" \

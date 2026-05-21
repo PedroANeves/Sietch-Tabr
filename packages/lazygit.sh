@@ -13,9 +13,11 @@ download() {
   [[ $# == 2 ]] \
     || die "Usage: download '1.2.3' 'path/to/sources/<package>/'"
   local version=$1
-  local source_dir=$2
+  local directory=$2
 
-  _download_tar_gz_from_gh "${repo}" "${version}" "${source_dir}"
+  local filename="%name%_${version}_Linux_x86_64.tar.gz"
+
+  _download_file_from_gh "${repo}" "${filename}" "${version}" "${directory}"
 }
 
 build() {
