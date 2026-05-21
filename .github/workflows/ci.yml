@@ -63,7 +63,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          RELEASE_TAG="$(date +'%Y-%m-%d_%H:%M:%S')"
+          RELEASE_TAG="$(date +'%Y-%m-%d_%H-%M-%S')"
           echo "Creating release: $RELEASE_TAG"
 
           gh release create "$RELEASE_TAG" \
