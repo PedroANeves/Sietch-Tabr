@@ -23,8 +23,8 @@ apt-get update \
 DEBIAN_FRONTEND=noninteractive apt-get install -y $PACKAGES
 
 for p in $PACKAGES; do
-  if command -v "${p}" >/dev/null 2>&1 ; then
-    echo "${p} installed. [$("${p}" --version)]"
+  if dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q "install ok installed"; then
+    echo "${p} installed. [$("${p}" --version 2>/dev/null || echo 'OK')]"
   else
     echo "${p} is missing!"
   fi
