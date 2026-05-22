@@ -18,13 +18,14 @@ sed '/^$/d;/^#/d' packages/versions.ini | \
 
     . "${f}"
     source_dir="./build/sources/${name}"
-    if [[ ! -d $source_dir || $1 == "-f" || $1 == "--force" ]]; then
+    deb_file="./build/debs/${name}_${version}_amd64.deb"
+    if [[ ! -d $source_dir || ! -f $deb_file || $1 == "-f" || $1 == "--force" ]]; then
       echo "No ${source_dir} found, Downloading ..."
       mkdir -p "${source_dir}"
 
       download "${version}" "${source_dir}"
     else
-      echo "${name} already downloaded, skipping ..."
+      echo "${name} already downloaded or built, skipping ..."
     fi
   done
 
