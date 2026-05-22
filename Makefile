@@ -1,5 +1,5 @@
 CONTAINER_ENGINE = podman
-CODENAME = trixie
+CODENAME ?= $(strip $(shell grep -Po 'Codename: \K[a-z]*' conf/distributions))
 GPG_KEY = sietch-tabr.pub.asc
 
 ifneq ($(wildcard static/CNAME),)
