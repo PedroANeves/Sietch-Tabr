@@ -40,6 +40,17 @@ jobs:
 
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "count=${COUNT}" >> $GITHUB_OUTPUT
+
+            cat <<EOF > pr_body.txt
+          ### System Scan Report
+          The automated package monitoring suite has caught version upgrades.
+
+          #### Updated package signatures manifest:
+          ```ini
+          ${VERSIONS}
+          ```
+          *Review test validation check outputs prior to staging target mergers.*
+          EOF
           else
             echo "No package updates."
             echo "changed=false" >> $GITHUB_OUTPUT
@@ -54,15 +65,7 @@ jobs:
           branch: auto-update-packages
           delete-branch: true
           title: "Automated Package Updates (${{ steps.process_changes.outputs.count }} updated)"
-          body: |
-            ### System Scan Report
-            The automated package monitoring suite has caught version upgrades.
-
-            #### Updated package signatures manifest:
-            ```ini
-            $(cat packages/versions.ini)
-            ```
-            *Review test validation check outputs prior to staging target mergers.*
+          body-path: pr_body.txt
           labels: |
             automated-pr
             dependencies
