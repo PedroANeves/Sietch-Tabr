@@ -41,7 +41,7 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "count=${COUNT}" >> $GITHUB_OUTPUT
 
-            cat <<EOF > pr_body.txt
+            cat <<EOF > /tmp/pr_body.txt
           ### System Scan Report
           The automated package monitoring suite has caught version upgrades.
 
@@ -65,7 +65,7 @@ jobs:
           branch: auto-update-packages
           delete-branch: true
           title: "Automated Package Updates (${{ steps.process_changes.outputs.count }} updated)"
-          body-path: pr_body.txt
+          body-path: /tmp/pr_body.txt
           labels: |
             automated-pr
             dependencies
