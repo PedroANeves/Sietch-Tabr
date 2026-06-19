@@ -46,9 +46,9 @@ jobs:
           The automated package monitoring suite has caught version upgrades.
 
           #### Updated package signatures manifest:
-          ```ini
+          \`\`\`ini
           ${VERSIONS}
-          ```
+          \`\`\`
           *Review test validation check outputs prior to staging target mergers.*
           EOF
           else
