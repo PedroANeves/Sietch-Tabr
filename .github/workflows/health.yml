@@ -79,7 +79,7 @@ jobs:
             exit 1
           fi
 
-          EXP_DATE=$(gpg --show-keys "$KEY_PATH" | grep -E "expires:" | head -n 1 | awk '{print $3}')
+          EXP_DATE=$(gpg --show-keys "$KEY_PATH" | grep -Po "expires: \K[0-9-]*")
           if [ -z "$EXP_DATE" ]; then
             echo "Cryptographic signature block has no expiration constraint!"
             exit 1
